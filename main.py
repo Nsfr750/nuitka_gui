@@ -4,7 +4,7 @@ import subprocess
 import threading
 import os
 import sys
-import traceback as tb_logger
+import nuitka_traceback as tb_logger
 sys.excepthook = tb_logger.log_exception
 traceback = tb_logger.get_traceback_module()
 from menu import create_menu_bar
@@ -44,7 +44,12 @@ class NuitkaGUI:
         self.checkbuttons = {}
         self.radiobuttons = {}
 
-        # Layout (store references for updates)
+        self.remove_output = tk.BooleanVar(value=False)
+        self.show_memory = tk.BooleanVar(value=False)
+        self.show_progress = tk.BooleanVar(value=False)
+        self.pgo = tk.BooleanVar(value=False)
+        self.no_dependency_cache = tk.BooleanVar(value=False)
+
         self.labels['python_file'] = tk.Label(root, text="Python file:")
         self.labels['python_file'].grid(row=0, column=0, sticky="e", padx=5, pady=5)
         self.entries['file_path'] = tk.Entry(root, textvariable=self.file_path, width=40)
@@ -79,17 +84,16 @@ class NuitkaGUI:
         self.entries['splash_timeout'] = tk.Spinbox(root, from_=1, to=30, textvariable=self.splash_timeout, width=5)
         self.entries['splash_timeout'].grid(row=3, column=3, padx=5, pady=5)
 
-        self.checkbuttons['onefile'] = tk.Checkbutton(root, text="--onefile", variable=self.onefile)
-        self.checkbuttons['onefile'].grid(row=3, column=0, sticky="w", padx=5)
-        self.checkbuttons['standalone'] = tk.Checkbutton(root, text="--standalone", variable=self.standalone)
-        self.checkbuttons['standalone'].grid(row=3, column=1, sticky="w", padx=5)
-        self.checkbuttons['disable_console'] = tk.Checkbutton(root, text="--windows-disable-console", variable=self.disable_console)
-        self.checkbuttons['disable_console'].grid(row=3, column=2, sticky="w", padx=5)
+        self.build_mode = tk.StringVar(value="onefile")
+        self.labels['build_mode'] = tk.Label(root, text="Build mode:")
+        self.labels['build_mode'].grid(row=3, column=0, sticky="e", padx=5)
+        self.entries['build_mode'] = tk.OptionMenu(root, self.build_mode, "onefile", "standalone", "none")
+        self.entries['build_mode'].grid(row=3, column=1, padx=5, pady=5, sticky="w")
 
         self.labels['plugins'] = tk.Label(root, text="--enable-plugin(s):")
-        self.labels['plugins'].grid(row=3, column=0, sticky="e", padx=5)
+        self.labels['plugins'].grid(row=4, column=0, sticky="e", padx=5)
         self.entries['plugins'] = tk.Entry(root, textvariable=self.plugins, width=25)
-        self.entries['plugins'].grid(row=3, column=1, sticky="w", padx=5)
+        self.entries['plugins'].grid(row=4, column=1, sticky="w", padx=5)
         self.labels['plugins_hint'] = tk.Label(root, text="comma-separated")
         self.labels['plugins_hint'].grid(row=3, column=2, sticky="w")
 
@@ -117,7 +121,7 @@ class NuitkaGUI:
         self.labels['data_files'].grid(row=5, column=0, sticky="e", padx=5)
         self.entries['data_files'] = tk.Entry(root, textvariable=self.data_files, width=25)
         self.entries['data_files'].grid(row=5, column=1, sticky="w", padx=5)
-        self.labels['data_files_hint'] = tk.Label(root, text="pattern=dest, ...")
+        self.labels['data_files_hint'] = tk.Label(root, text="pattern=dest (e.g. assets/*=assets/)")
         self.labels['data_files_hint'].grid(row=5, column=2, sticky="w")
 
         self.checkbuttons['follow_imports'] = tk.Checkbutton(root, text="--follow-imports", variable=self.follow_imports)
@@ -149,15 +153,15 @@ class NuitkaGUI:
         self.labels['include_hint'] = tk.Label(root, text="comma-separated")
         self.labels['include_hint'].grid(row=9, column=2, sticky="w")
 
-        self.checkbuttons['remove_output'] = tk.Checkbutton(root, text="--remove-output", variable=tk.BooleanVar(value=False))
+        self.checkbuttons['remove_output'] = tk.Checkbutton(root, text="--remove-output", variable=self.remove_output)
         self.checkbuttons['remove_output'].grid(row=10, column=0, sticky="w", padx=5)
-        self.checkbuttons['show_memory'] = tk.Checkbutton(root, text="--show-memory", variable=tk.BooleanVar(value=False))
+        self.checkbuttons['show_memory'] = tk.Checkbutton(root, text="--show-memory", variable=self.show_memory)
         self.checkbuttons['show_memory'].grid(row=10, column=1, sticky="w", padx=5)
-        self.checkbuttons['show_progress'] = tk.Checkbutton(root, text="--show-progress", variable=tk.BooleanVar(value=False))
+        self.checkbuttons['show_progress'] = tk.Checkbutton(root, text="--show-progress", variable=self.show_progress)
         self.checkbuttons['show_progress'].grid(row=10, column=2, sticky="w", padx=5)
-        self.checkbuttons['pgo'] = tk.Checkbutton(root, text="--pgo", variable=tk.BooleanVar(value=False))
+        self.checkbuttons['pgo'] = tk.Checkbutton(root, text="--pgo", variable=self.pgo)
         self.checkbuttons['pgo'].grid(row=11, column=0, sticky="w", padx=5)
-        self.checkbuttons['no_dependency_cache'] = tk.Checkbutton(root, text="--no-dependency-cache", variable=tk.BooleanVar(value=False))
+        self.checkbuttons['no_dependency_cache'] = tk.Checkbutton(root, text="--no-dependency-cache", variable=self.no_dependency_cache)
         self.checkbuttons['no_dependency_cache'].grid(row=11, column=1, sticky="w", padx=5)
 
         self.labels['onefile_compression'] = tk.Label(root, text="Onefile compression:")
@@ -275,9 +279,10 @@ class NuitkaGUI:
         try:
             cmd = [sys.executable, "-m", "nuitka"]
             # Basic options
-            if self.onefile.get():
+            # Build mode
+            if self.build_mode.get() == "onefile":
                 cmd.append("--onefile")
-            if self.standalone.get():
+            elif self.build_mode.get() == "standalone":
                 cmd.append("--standalone")
             if outdir:
                 cmd.extend([f"--output-dir={outdir}"])
@@ -317,22 +322,6 @@ class NuitkaGUI:
                     except Exception as e:
                         self.append_log(f"Error converting PNG to ICO: {e}\n")
                         self.status_label.config(text="PNG to ICO conversion failed", fg="red")
-                        self.buttons['compile'].config(state='normal')
-                        self.buttons['stop_compile'].config(state='disabled')
-                        self._compiling = False
-                        return
-            data_files = self.data_files.get().strip()
-            if data_files:
-                for pair in data_files.split(","):
-                    pair = pair.strip()
-                    if pair:
-                        cmd.append(f"--include-data-files={pair}")
-            if self.follow_imports.get():
-                cmd.append("--follow-imports")
-            if self.lto.get():
-                cmd.append("--lto")
-            if self.clang.get():
-                cmd.append("--clang")
             jobs = self.jobs.get()
             if jobs and jobs > 1:
                 cmd.append(f"--jobs={jobs}")
@@ -360,21 +349,16 @@ class NuitkaGUI:
                     mod = mod.strip()
                     if mod:
                         cmd.append(f"--include-module={mod}")
-            if self.checkbuttons['remove_output'].cget('variable'):
-                if self.checkbuttons['remove_output'].var.get():
-                    cmd.append("--remove-output")
-            if self.checkbuttons['show_memory'].cget('variable'):
-                if self.checkbuttons['show_memory'].var.get():
-                    cmd.append("--show-memory")
-            if self.checkbuttons['show_progress'].cget('variable'):
-                if self.checkbuttons['show_progress'].var.get():
-                    cmd.append("--show-progress")
-            if self.checkbuttons['pgo'].cget('variable'):
-                if self.checkbuttons['pgo'].var.get():
-                    cmd.append("--pgo")
-            if self.checkbuttons['no_dependency_cache'].cget('variable'):
-                if self.checkbuttons['no_dependency_cache'].var.get():
-                    cmd.append("--no-dependency-cache")
+            if self.remove_output.get():
+                cmd.append("--remove-output")
+            if self.show_memory.get():
+                cmd.append("--show-memory")
+            if self.show_progress.get():
+                cmd.append("--show-progress")
+            if self.pgo.get():
+                cmd.append("--pgo")
+            if self.no_dependency_cache.get():
+                cmd.append("--no-dependency-cache")
             compression = self.onefile_compression.get()
             if compression and compression != "auto":
                 cmd.append(f"--onefile-compression={compression}")
@@ -404,7 +388,7 @@ class NuitkaGUI:
             self.status_label.config(text="Error running Nuitka.", fg="red")
             self.append_log(str(e))
         finally:
-            self.compile_btn.config(state='normal')
+            self.buttons['compile'].config(state='normal')
             self.buttons['stop_compile'].config(state='disabled')
             self.progress.stop()
             self.progress.grid_remove()

@@ -84,3 +84,4 @@ Desktop.ini
 venv/
 ENV/
 env/
+go.bat
