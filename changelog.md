@@ -9,12 +9,12 @@
   - Onefile compression selection
   - Python flags and more
 
-## v1.2.0 (2025-05-23)
+## v1.2.0 (2025-05-21)
 - Added built-in traceback logging (traceback.py)
 - Fixed Sponsor dialog modal bugs
 - Improved error handling and log viewer integration
 
-## v1.1.0 (2025-05-23)
+## v1.1.0 (2025-05-20)
 - Added support for selecting Windows icons from ICO, EXE, or PNG files.
 - PNG icons are automatically converted to ICO using Pillow (if installed).
 - Added GUI options for many common Nuitka flags: plugins, data files, jobs, LTO, Clang, follow-imports, and more.
