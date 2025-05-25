@@ -1,1 +1,9 @@
 
+
+[2025-05-25 14:29:30] Uncaught exception:
+Traceback (most recent call last):
+  File "c:\Users\guara\Documents\GitHub\nuitka_gui\main.py", line 527, in <module>
+  File "c:\Users\guara\Documents\GitHub\nuitka_gui\main.py", line 524, in main
+  File "C:\Users\guara\AppData\Local\Programs\Python\Python312\Lib\tkinter\__init__.py", line 1504, in mainloop
+    self.tk.mainloop(n)
+KeyboardInterrupt
