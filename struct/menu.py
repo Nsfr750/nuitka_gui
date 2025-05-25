@@ -6,11 +6,11 @@ Handles File, Log, and Info menus, and attaches them to the main window.
 """
 
 import tkinter as tk
-from about import About
-from help import Help
-from sponsor import Sponsor
-import version
-from log_viewer import LogViewer
+from struct.about import About
+from struct.help import Help
+from struct.sponsor import Sponsor
+from struct import version
+from struct.log_viewer import LogViewer
 import crash_report_viewer
 
 

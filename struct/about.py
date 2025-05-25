@@ -7,7 +7,8 @@ Displays version, copyright, and a brief description to the user.
 
 import tkinter as tk
 from tkinter import ttk
-from version import get_version
+
+from struct.version import get_version
 
 class About:
     """

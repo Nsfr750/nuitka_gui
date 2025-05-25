@@ -1,5 +1,5 @@
 import tkinter as tk
-from menu import create_menu_bar
+from struct.menu import create_menu_bar
 from gui.options_panel import OptionsPanel
 
 class MainWindow(tk.Tk):
