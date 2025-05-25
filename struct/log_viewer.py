@@ -36,6 +36,24 @@ class LogViewer:
             text_area.insert(tk.END, 'Log file not found.')
         text_area.config(state=tk.DISABLED)
         
+        # Browse button to open log file in default editor
+        def browse_log():
+            import subprocess
+            import sys
+            import os
+            if os.path.exists(LOG_FILE):
+                if sys.platform.startswith('win'):
+                    os.startfile(LOG_FILE)
+                elif sys.platform.startswith('darwin'):
+                    subprocess.call(['open', LOG_FILE])
+                else:
+                    subprocess.call(['xdg-open', LOG_FILE])
+            else:
+                tk.messagebox.showerror('Error', 'Log file not found.')
+
+        browse_btn = ttk.Button(log_window, text='Browse Log File', command=browse_log)
+        browse_btn.pack(pady=(0, 5))
+
         # Close button
         close_btn = ttk.Button(log_window, text='Close', command=log_window.destroy)
         close_btn.pack(pady=10)

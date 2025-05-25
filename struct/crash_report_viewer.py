@@ -25,6 +25,24 @@ def show_crash_report(root):
     text_area.insert(tk.END, content)
     text_area.config(state=tk.DISABLED)
     text_area.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+    # Browse button to open crash report in default editor
+    def browse_crash_report():
+        import subprocess
+        import sys
+        import os
+        if os.path.exists(CRASH_REPORT_FILE):
+            if sys.platform.startswith('win'):
+                os.startfile(CRASH_REPORT_FILE)
+            elif sys.platform.startswith('darwin'):
+                subprocess.call(['open', CRASH_REPORT_FILE])
+            else:
+                subprocess.call(['xdg-open', CRASH_REPORT_FILE])
+        else:
+            tk.messagebox.showerror('Error', 'Crash report file not found.')
+
+    browse_btn = tk.Button(win, text='Browse Crash Report', command=browse_crash_report)
+    browse_btn.pack(pady=(0, 5))
+
     close_btn = tk.Button(win, text="Close", command=win.destroy)
     close_btn.pack(pady=10)
     win.transient(root)
