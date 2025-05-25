@@ -6,28 +6,45 @@ def build_nuitka_command(main_state, options_state):
     """
     cmd = ["nuitka"]
     # Main options
-    if main_state.get("build_mode") == "onefile":
+    # Build mode via options_state (GUI now has its own build_mode field)
+    build_mode = options_state.get("build_mode", "onefile")
+    if build_mode == "onefile":
         cmd.append("--onefile")
-    elif main_state.get("build_mode") == "standalone":
+    elif build_mode == "standalone":
         cmd.append("--standalone")
     if main_state.get("output_dir"):
         cmd.append(f"--output-dir={main_state['output_dir']}")
     if main_state.get("output_filename"):
         cmd.append(f"--output-filename={main_state['output_filename']}")
-    icon = main_state.get("icon_path", "").strip()
-    if icon:
-        icon_type = main_state.get("icon_type", "ico")
-        if icon_type == "ico":
-            cmd.append(f"--windows-icon-from-ico={icon}")
-        elif icon_type == "exe":
-            cmd.append(f"--windows-icon-from-exe={icon}")
-        elif icon_type == "png":
-            cmd.append(f"--windows-icon-from-png={icon}")
-    splash = main_state.get("splash_image_path", "").strip()
+    # Icon from options panel (overrides main_state if present)
+    icon_ico = options_state.get("icon_from_ico", "").strip()
+    if icon_ico:
+        cmd.append(f"--windows-icon-from-ico={icon_ico}")
+    else:
+        icon = main_state.get("icon_path", "").strip()
+        if icon:
+            icon_type = main_state.get("icon_type", "ico")
+            if icon_type == "ico":
+                cmd.append(f"--windows-icon-from-ico={icon}")
+            elif icon_type == "exe":
+                cmd.append(f"--windows-icon-from-exe={icon}")
+            elif icon_type == "png":
+                cmd.append(f"--windows-icon-from-png={icon}")
+    # Splash screen
+    splash = options_state.get("splash_screen_image", "").strip() or main_state.get("splash_image_path", "").strip()
     if splash:
-        cmd.append(f"--windows-splash-screen-image={splash}")
-        if main_state.get("splash_timeout", 0) > 0:
-            cmd.append(f"--windows-splash-screen-timeout={main_state['splash_timeout']}")
+        cmd.append(f"--onefile-windows-splash-screen-image={splash}")
+    # Plugin enable
+    plugin_enable = options_state.get("plugin_enable", "").strip()
+    if plugin_enable:
+        for plugin in plugin_enable.split(","):
+            plugin = plugin.strip()
+            if plugin:
+                cmd.append(f"--plugin-enable={plugin}")
+    # Windows console mode
+    console_mode = options_state.get("windows_console_mode", "").strip()
+    if console_mode:
+        cmd.append(f"--windows-console-mode={console_mode}")
     # Advanced options
     if options_state.get("disable_console"):
         cmd.append("--windows-disable-console")
