@@ -2,7 +2,13 @@
 Help Dialog Module
 
 This module provides the Help dialog for the Nuitka GUI Compiler.
-Displays usage instructions and feature highlights in a tabbed interface.
+Displays usage instructions, feature highlights, and UI/UX improvements in a tabbed interface.
+
+New in v1.4.0:
+- Collapsible/expandable sections for option groups
+- Modern themed look using ttk widgets
+- Grouped rarely-used options in an "Advanced" section
+- Modularized code for easier maintenance
 
 License: GPL v3.0 (see LICENSE)
 """

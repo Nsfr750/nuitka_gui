@@ -1,7 +1,10 @@
-# Tkinter is built-in. Nuitka must be installed separately.
-# To install Nuitka: pip install nuitka
+# Tkinter is built-in with Python (no need to install).
+# Nuitka must be installed separately: pip install nuitka
 # Pillow is required for PNG icon support: pip install pillow
+# ttkbootstrap is optional for future theming: pip install ttkbootstrap
 # Traceback logging is now built-in (see traceback.py)
-# Advanced Nuitka options supported in GUI (>=v1.3.0)
+# Advanced Nuitka options supported in GUI (>=v1.4.0)
+# New modular GUI and advanced options are now supported
 nuitka
 pillow
+ttkbootstrap

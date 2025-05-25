@@ -1,6 +1,11 @@
 # Changelog
 
 ## v1.4.0 (2025-05-25)
+- Major UI/UX overhaul:
+  - Collapsible/expandable sections for all option groups
+  - Modern themed look using ttk widgets
+  - Grouped rarely-used options in a "Rarely-used Advanced" collapsible section
+  - Modularized options panel for maintainability
 - Added more advanced Nuitka options to the GUI:
   - MinGW64 support
   - UAC admin/UIAccess flags
