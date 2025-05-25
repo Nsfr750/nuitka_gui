@@ -85,3 +85,4 @@ venv/
 ENV/
 env/
 go.bat
+.exe
