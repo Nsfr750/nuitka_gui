@@ -1,5 +1,5 @@
 import tkinter as tk
-from struct.menu import create_menu_bar
+from nuitka_struct.menu import create_menu_bar
 from gui.options_panel import OptionsPanel
 
 class MainWindow(tk.Tk):
@@ -42,9 +42,24 @@ class MainWindow(tk.Tk):
         self.log_box = tk.Text(self, height=12, state='disabled', wrap='word')
         self.log_box.grid(row=5, column=0, columnspan=3, sticky="we", padx=5, pady=5)
     def browse_file(self):
-        pass
+        from tkinter import filedialog
+        file_path = filedialog.askopenfilename(
+            parent=self,
+            title="Select Python file",
+            filetypes=[('Python Files', '*.py'), ('All Files', '*.*')]
+        )
+        if file_path:
+            self.file_path.set(file_path)
+
     def browse_output_dir(self):
-        pass
+        from tkinter import filedialog
+        dir_path = filedialog.askdirectory(
+            parent=self,
+            title="Select Output Directory"
+        )
+        if dir_path:
+            self.output_dir.set(dir_path)
+
     def compile_file(self):
         from compiler.command_builder import build_nuitka_command
         from compiler.runner import run_nuitka_command

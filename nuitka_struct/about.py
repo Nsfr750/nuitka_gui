@@ -8,7 +8,7 @@ Displays version, copyright, and a brief description to the user.
 import tkinter as tk
 from tkinter import ttk
 
-from struct.version import get_version
+from nuitka_struct.version import get_version
 
 class About:
     """

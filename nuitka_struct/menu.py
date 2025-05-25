@@ -6,12 +6,12 @@ Handles File, Log, and Info menus, and attaches them to the main window.
 """
 
 import tkinter as tk
-from struct.about import About
-from struct.help import Help
-from struct.sponsor import Sponsor
-from struct import version
-from struct.log_viewer import LogViewer
-from struct import crash_report_viewer
+from nuitka_struct.about import About
+from nuitka_struct.help import Help
+from nuitka_struct.sponsor import Sponsor
+from nuitka_struct import version
+from nuitka_struct.log_viewer import LogViewer
+from nuitka_struct import crash_report_viewer
 
 
 def create_menu_bar(root, app):
