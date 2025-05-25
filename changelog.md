@@ -1,15 +1,17 @@
 # Changelog
 
-## v1.3.0 (2025-05-23)
-- Added advanced Nuitka options to the GUI:
-  - Exclude/include modules and packages
-  - Remove output directory before build
-  - Show memory usage and progress
-  - Enable PGO (Profile Guided Optimization)
-  - Onefile compression selection
-  - Python flags and more
+## v1.4.0 (2025-05-25)
+- Added more advanced Nuitka options to the GUI:
+  - MinGW64 support
+  - UAC admin/UIAccess flags
+  - Windows metadata fields (company, product, version)
+  - UPX onefile compression
+- Grouped advanced options in the GUI for better usability
+- Improved error handling and input validation
+- Refactored command construction for maintainability
+- Enhanced user feedback and status reporting
 
-## v1.2.0 (2025-05-21)
+## v1.3.0 (2025-05-23)
 - Added built-in traceback logging (traceback.py)
 - Fixed Sponsor dialog modal bugs
 - Improved error handling and log viewer integration

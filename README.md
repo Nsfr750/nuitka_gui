@@ -1,4 +1,4 @@
-# Nuitka GUI Compiler
+# Nuitka GUI Compiler v1.4.0
 
 A simple Python GUI app to compile Python scripts using Nuitka.
 
@@ -13,7 +13,18 @@ A simple Python GUI app to compile Python scripts using Nuitka.
 - Built-in error logging to Nuitka.log (see traceback.py)
 - Log viewer for easy debugging
 - Sponsor dialog to support development
-- Advanced Nuitka options: exclude/include modules, onefile compression, memory/progress, PGO, python flags, and more
+- **Advanced Nuitka options:**
+  - Exclude/include modules and packages
+  - Remove output directory before build
+  - Show memory usage and progress
+  - Enable PGO (Profile Guided Optimization)
+  - Onefile compression (UPX)
+  - Python flags
+  - MinGW64 support
+  - UAC admin/UIAccess flags
+  - Windows metadata fields (company, product, version)
+  - Grouped advanced options for easier navigation
+- Improved error handling and input validation
 
 ## Requirements
 - Python 3.x

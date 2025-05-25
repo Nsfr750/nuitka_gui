@@ -48,6 +48,21 @@ class Help:
         # Create a notebook (tabbed interface)
         notebook = ttk.Notebook(help_window)
         notebook.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+
+        # --- New Features Tab ---
+        features_frame = ttk.Frame(notebook)
+        notebook.add(features_frame, text="What's New")
+        features_text = tk.Text(features_frame, wrap=tk.WORD, height=20)
+        features_text.insert(tk.END, (
+            "New in v1.4.0:\n"
+            "- More advanced Nuitka options: MinGW64, UAC, metadata fields (company/product/version), UPX compression.\n"
+            "- Improved error handling and input validation.\n"
+            "- Advanced options grouped for easier navigation.\n"
+            "- User feedback is clearer and more robust.\n"
+        ))
+        features_text.config(state=tk.DISABLED)
+        features_text.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+
         
         # ===== USAGE TAB =====
         usage_frame = ttk.Frame(notebook, padding=10)

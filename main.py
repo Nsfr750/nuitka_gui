@@ -164,10 +164,10 @@ class NuitkaGUI:
         self.checkbuttons['no_dependency_cache'] = tk.Checkbutton(root, text="--no-dependency-cache", variable=self.no_dependency_cache)
         self.checkbuttons['no_dependency_cache'].grid(row=11, column=1, sticky="w", padx=5)
 
-        self.labels['onefile_compression'] = tk.Label(root, text="Onefile compression:")
+        self.labels['onefile_compression'] = tk.Label(root, text="Onefile compression (use UPX for extra compression):")
         self.labels['onefile_compression'].grid(row=12, column=0, sticky="e", padx=5)
         self.onefile_compression = tk.StringVar(value="auto")
-        self.entries['onefile_compression'] = tk.OptionMenu(root, self.onefile_compression, "auto", "lzma", "none")
+        self.entries['onefile_compression'] = tk.OptionMenu(root, self.onefile_compression, "auto", "upx")
         self.entries['onefile_compression'].grid(row=12, column=1, sticky="w", padx=5)
 
         self.labels['python_flags'] = tk.Label(root, text="Python flags:")
@@ -178,215 +178,196 @@ class NuitkaGUI:
         self.labels['python_flags_hint'] = tk.Label(root, text="comma-separated")
         self.labels['python_flags_hint'].grid(row=13, column=2, sticky="w")
 
+        # --- More Nuitka options ---
+        self.mingw64 = tk.BooleanVar(value=False)
+        self.checkbuttons['mingw64'] = tk.Checkbutton(root, text="Use MinGW64 (--mingw64)", variable=self.mingw64)
+        self.checkbuttons['mingw64'].grid(row=15, column=0, sticky="w", padx=5)
+
+        self.show_modules = tk.BooleanVar(value=False)
+        self.checkbuttons['show_modules'] = tk.Checkbutton(root, text="Show modules (--show-modules)", variable=self.show_modules)
+        self.checkbuttons['show_modules'].grid(row=15, column=1, sticky="w", padx=5)
+
+        self.nofollow_import_to = tk.StringVar()
+        self.labels['nofollow_import_to'] = tk.Label(root, text="No follow import to (comma):")
+        self.labels['nofollow_import_to'].grid(row=16, column=0, sticky="e", padx=5)
+        self.entries['nofollow_import_to'] = tk.Entry(root, textvariable=self.nofollow_import_to, width=25)
+        self.entries['nofollow_import_to'].grid(row=16, column=1, sticky="w", padx=5)
+
+        self.noinclude_module = tk.StringVar()
+        self.labels['noinclude_module'] = tk.Label(root, text="No include module (comma):")
+        self.labels['noinclude_module'].grid(row=17, column=0, sticky="e", padx=5)
+        self.entries['noinclude_module'] = tk.Entry(root, textvariable=self.noinclude_module, width=25)
+        self.entries['noinclude_module'].grid(row=17, column=1, sticky="w", padx=5)
+
+        self.noinclude_package = tk.StringVar()
+        self.labels['noinclude_package'] = tk.Label(root, text="No include package (comma):")
+        self.labels['noinclude_package'].grid(row=18, column=0, sticky="e", padx=5)
+        self.entries['noinclude_package'] = tk.Entry(root, textvariable=self.noinclude_package, width=25)
+        self.entries['noinclude_package'].grid(row=18, column=1, sticky="w", padx=5)
+
+        self.assume_yes_for_downloads = tk.BooleanVar(value=False)
+        self.checkbuttons['assume_yes_for_downloads'] = tk.Checkbutton(root, text="Assume yes for downloads (--assume-yes-for-downloads)", variable=self.assume_yes_for_downloads)
+        self.checkbuttons['assume_yes_for_downloads'].grid(row=19, column=0, sticky="w", padx=5)
+
+        self.windows_uac_admin = tk.BooleanVar(value=False)
+        self.checkbuttons['windows_uac_admin'] = tk.Checkbutton(root, text="Windows UAC admin (--windows-uac-admin)", variable=self.windows_uac_admin)
+        self.checkbuttons['windows_uac_admin'].grid(row=19, column=1, sticky="w", padx=5)
+
+        self.windows_uac_uiaccess = tk.BooleanVar(value=False)
+        self.checkbuttons['windows_uac_uiaccess'] = tk.Checkbutton(root, text="Windows UAC UIAccess (--windows-uac-uiaccess)", variable=self.windows_uac_uiaccess)
+        self.checkbuttons['windows_uac_uiaccess'].grid(row=19, column=2, sticky="w", padx=5)
+
+        self.labels['windows_company_name'] = tk.Label(root, text="Windows company name:")
+        self.labels['windows_company_name'].grid(row=20, column=0, sticky="e", padx=5)
+        self.windows_company_name = tk.StringVar()
+        self.entries['windows_company_name'] = tk.Entry(root, textvariable=self.windows_company_name, width=25)
+        self.entries['windows_company_name'].grid(row=20, column=1, sticky="w", padx=5)
+
+        self.labels['windows_product_name'] = tk.Label(root, text="Windows product name:")
+        self.labels['windows_product_name'].grid(row=21, column=0, sticky="e", padx=5)
+        self.windows_product_name = tk.StringVar()
+        self.entries['windows_product_name'] = tk.Entry(root, textvariable=self.windows_product_name, width=25)
+        self.entries['windows_product_name'].grid(row=21, column=1, sticky="w", padx=5)
+
+        self.labels['windows_product_version'] = tk.Label(root, text="Windows product version:")
+        self.labels['windows_product_version'].grid(row=22, column=0, sticky="e", padx=5)
+        self.windows_product_version = tk.StringVar()
+        self.entries['windows_product_version'] = tk.Entry(root, textvariable=self.windows_product_version, width=25)
+        self.entries['windows_product_version'].grid(row=22, column=1, sticky="w", padx=5)
+
+        self.labels['windows_file_version'] = tk.Label(root, text="Windows file version:")
+        self.labels['windows_file_version'].grid(row=23, column=0, sticky="e", padx=5)
+        self.windows_file_version = tk.StringVar()
+        self.entries['windows_file_version'] = tk.Entry(root, textvariable=self.windows_file_version, width=25)
+        self.entries['windows_file_version'].grid(row=23, column=1, sticky="w", padx=5)
+
         self.labels['custom_opts'] = tk.Label(root, text="Custom Nuitka options:")
-        self.labels['custom_opts'].grid(row=14, column=0, sticky="e", padx=5)
+        self.labels['custom_opts'].grid(row=24, column=0, sticky="e", padx=5)
         self.entries['custom_opts'] = tk.Entry(root, textvariable=self.custom_opts, width=40)
-        self.entries['custom_opts'].grid(row=14, column=1, columnspan=2, padx=5, pady=5, sticky="we")
+        self.entries['custom_opts'].grid(row=24, column=1, columnspan=2, padx=5, pady=5, sticky="we")
 
-        from tkinter import ttk
-        # Progress bar for compilation (left of Compile button)
-        self.progress = ttk.Progressbar(root, mode='indeterminate', length=120)
-        self.progress.grid(row=15, column=0, sticky="e", padx=(10, 5), pady=10)
-        self.buttons['compile'] = tk.Button(root, text="Compile", command=self.compile_file)
-        self.buttons['compile'].grid(row=15, column=1, sticky="w", padx=(5, 2), pady=10)
-        self.buttons['stop_compile'] = tk.Button(root, text="Stop Compiling", command=self.stop_compiling, state='disabled')
-        self.buttons['stop_compile'].grid(row=15, column=2, sticky="w", padx=(2, 10), pady=10)
-        self.status_label = tk.Label(root, text="", fg="blue")
-        self.status_label.grid(row=16, column=0, columnspan=3)
-        self.progress.grid_remove()  # Hide initially
-
-        self.labels['output'] = tk.Label(root, text="Output:")
-        self.labels['output'].grid(row=11, column=0, sticky="ne", padx=5)
-        self.log_box = scrolledtext.ScrolledText(root, width=60, height=10, state='disabled')
-        self.log_box.grid(row=11, column=1, columnspan=2, padx=5, pady=5, sticky="we")
-
-        root.grid_columnconfigure(1, weight=1)
-        root.resizable(True, True)
-
-    def browse_icon_file(self):
-        icon_type = self.icon_type.get()
-        if icon_type == "ico":
-            filetypes = [("Icon Files", "*.ico")]
-        elif icon_type == "exe":
-            filetypes = [("Executable Files", "*.exe")]
-        else:
-            filetypes = [("PNG Files", "*.png")]
-        file = filedialog.askopenfilename(filetypes=filetypes)
-        if file:
-            self.icon_path.set(file)
-
-    def browse_splash_image(self):
-        file = filedialog.askopenfilename(filetypes=[("PNG Files", "*.png")])
-        if file:
-            self.splash_image_path.set(file)
-
-    def browse_file(self):
-        file = filedialog.askopenfilename(filetypes=[("Python Files", "*.py")])
-        if file:
-            self.file_path.set(file)
-
-    def browse_output_dir(self):
-        directory = filedialog.askdirectory()
-        if directory:
-            self.output_dir.set(directory)
 
     def compile_file(self):
-        file = self.file_path.get()
-        outdir = self.output_dir.get()
-        if not file or not os.path.isfile(file):
-            messagebox.showerror("Error", "Please select a valid Python file.")
+        file = self.file_path.get().strip()
+        outdir = self.output_dir.get().strip()
+        # --- Input validation ---
+        if not file:
+            self._show_error("Please select a Python file to compile.")
+            messagebox.showerror("Error", "Please select a Python file to compile.")
+            return
+        if not os.path.isfile(file):
+            self._show_error("Selected Python file does not exist.")
+            messagebox.showerror("Error", "Selected Python file does not exist.")
             return
         if outdir and not os.path.isdir(outdir):
-            messagebox.showerror("Error", "Please select a valid output directory.")
+            self._show_error("Output directory does not exist.")
+            messagebox.showerror("Error", "Output directory does not exist.")
             return
-        splash_img = self.splash_image_path.get().strip()
-        splash_timeout = self.splash_timeout.get()
-        if splash_img:
-            # Show splash image for splash_timeout seconds before compiling
-            try:
-                from PIL import Image, ImageTk
-                splash_win = tk.Toplevel(self.root)
-                splash_win.overrideredirect(True)
-                img = Image.open(splash_img)
-                tk_img = ImageTk.PhotoImage(img)
-                label = tk.Label(splash_win, image=tk_img)
-                label.pack()
-                splash_win.update_idletasks()
-                # Center splash
-                w, h = img.size
-                x = (self.root.winfo_screenwidth() // 2) - (w // 2)
-                y = (self.root.winfo_screenheight() // 2) - (h // 2)
-                splash_win.geometry(f"{w}x{h}+{x}+{y}")
-                self.root.after(splash_timeout * 1000, splash_win.destroy)
-                self.root.update()
-                splash_win.after(splash_timeout * 1000, splash_win.destroy)
-                splash_win.mainloop()
-            except Exception as e:
-                self.append_log(f"Splash error: {e}\n")
+        self.progress.grid()
         self.status_label.config(text="Compiling...", fg="blue")
-        self.buttons['compile'].config(state='disabled')
-        self.buttons['stop_compile'].config(state='normal')
-        self.progress.grid()  # Show progress bar
-        self.progress.start(10)
-        self.log_box.config(state='normal')
-        self.log_box.delete(1.0, tk.END)
-        self.log_box.config(state='disabled')
-        self._compiling = True
-        threading.Thread(target=self.run_nuitka, args=(file, outdir), daemon=True).start()
+        threading.Thread(target=self.run_nuitka, args=(file, outdir)).start()
 
     def run_nuitka(self, file, outdir):
-        self._nuitka_proc = None
+        cmd = ["nuitka"]
+        # --- Main options ---
+        if self.build_mode.get() == "onefile":
+            cmd.append("--onefile")
+        elif self.build_mode.get() == "standalone":
+            cmd.append("--standalone")
+        if outdir:
+            cmd.append(f"--output-dir={outdir}")
+        output_filename = self.output_filename.get().strip()
+        if output_filename:
+            cmd.append(f"--output-filename={output_filename}")
+        icon = self.icon_path.get().strip()
+        if icon:
+            if self.icon_type.get() == "ico":
+                cmd.append(f"--windows-icon-from-ico={icon}")
+            elif self.icon_type.get() == "exe":
+                cmd.append(f"--windows-icon-from-exe={icon}")
+            elif self.icon_type.get() == "png":
+                cmd.append(f"--windows-icon-from-png={icon}")
+        splash = self.splash_image_path.get().strip()
+        if splash:
+            cmd.append(f"--windows-splash-screen-image={splash}")
+            if self.splash_timeout.get() > 0:
+                cmd.append(f"--windows-splash-screen-timeout={self.splash_timeout.get()}")
+        if self.disable_console.get():
+            cmd.append("--windows-disable-console")
+        data_files = self.data_files.get().strip()
+        self._append_comma_option(cmd, data_files, "--include-data-files")
+        if self.follow_imports.get():
+            cmd.append("--follow-imports")
+        if self.lto.get():
+            cmd.append("--lto")
+        if self.clang.get():
+            cmd.append("--clang")
+        if self.jobs.get() > 1:
+            cmd.append(f"--jobs={self.jobs.get()}")
+        # Plugins
+        plugins = self.plugins.get().strip()
+        self._append_comma_option(cmd, plugins, "--enable-plugin")
+        # Exclude/include modules
+        self._append_comma_option(cmd, self.exclude_modules.get().strip(), "--exclude-module")
+        self._append_comma_option(cmd, self.include_modules.get().strip(), "--include-module")
+        if self.remove_output.get():
+            cmd.append("--remove-output")
+        if self.show_memory.get():
+            cmd.append("--show-memory")
+        if self.show_progress.get():
+            cmd.append("--show-progress")
+        if self.pgo.get():
+            cmd.append("--pgo")
+        if self.no_dependency_cache.get():
+            cmd.append("--no-dependency-cache")
+        compression = self.onefile_compression.get()
+        # Nuitka does not support --onefile-compression; offer UPX as an alternative
+        if compression == "upx":
+            cmd.append("--windows-dependency-tool=upx")
+        # 'lzma' is default for onefile in Nuitka, so no extra flag needed. 'none' is not supported.
+        python_flags = self.python_flags.get().strip()
+        self._append_comma_option(cmd, python_flags, "--python-flag")
+        # --- More Nuitka options ---
+        if self.mingw64.get():
+            cmd.append("--mingw64")
+        if self.show_modules.get():
+            cmd.append("--show-modules")
+        self._append_comma_option(cmd, self.nofollow_import_to.get().strip(), "--nofollow-import-to")
+        self._append_comma_option(cmd, self.noinclude_module.get().strip(), "--noinclude-module")
+        self._append_comma_option(cmd, self.noinclude_package.get().strip(), "--noinclude-package")
+        if self.assume_yes_for_downloads.get():
+            cmd.append("--assume-yes-for-downloads")
+        if self.windows_uac_admin.get():
+            cmd.append("--windows-uac-admin")
+        if self.windows_uac_uiaccess.get():
+            cmd.append("--windows-uac-uiaccess")
+        if self.windows_company_name.get().strip():
+            cmd.append(f"--windows-company-name={self.windows_company_name.get().strip()}")
+        if self.windows_product_name.get().strip():
+            cmd.append(f"--windows-product-name={self.windows_product_name.get().strip()}")
+        if self.windows_product_version.get().strip():
+            cmd.append(f"--windows-product-version={self.windows_product_version.get().strip()}")
+        if self.windows_file_version.get().strip():
+            cmd.append(f"--windows-file-version={self.windows_file_version.get().strip()}")
+        # Custom options
+        custom = self.custom_opts.get().strip()
+        if custom:
+            cmd.extend(custom.split())
+        cmd.append(file)
+        self.append_log(f"Running: {' '.join(cmd)}\n")
+        import subprocess
         try:
-            cmd = [sys.executable, "-m", "nuitka"]
-            # Basic options
-            # Build mode
-            if self.build_mode.get() == "onefile":
-                cmd.append("--onefile")
-            elif self.build_mode.get() == "standalone":
-                cmd.append("--standalone")
-            if outdir:
-                cmd.extend([f"--output-dir={outdir}"])
-            # New options
-            if self.disable_console.get():
-                cmd.append("--windows-disable-console")
-            plugins = self.plugins.get().strip()
-            if plugins:
-                for plugin in plugins.split(","):
-                    plugin = plugin.strip()
-                    if plugin:
-                        cmd.append(f"--enable-plugin={plugin}")
-            icon = self.icon_path.get().strip()
-            icon_type = self.icon_type.get()
-            if icon:
-                if icon_type == "ico":
-                    cmd.append(f"--windows-icon-from-ico={icon}")
-                elif icon_type == "exe":
-                    cmd.append(f"--windows-icon-from-exe={icon}")
-                elif icon_type == "png":
-                    # Convert PNG to ICO
-                    try:
-                        from PIL import Image
-                        import tempfile
-                        img = Image.open(icon)
-                        tmp_ico = tempfile.NamedTemporaryFile(suffix=".ico", delete=False)
-                        img.save(tmp_ico.name, format="ICO")
-                        self.png_to_ico_path = tmp_ico.name
-                        cmd.append(f"--windows-icon-from-ico={self.png_to_ico_path}")
-                    except ImportError:
-                        self.append_log("Pillow is required for PNG to ICO conversion. Please install with 'pip install pillow'.\n")
-                        self.status_label.config(text="Missing Pillow library", fg="red")
-                        self.buttons['compile'].config(state='normal')
-                        self.buttons['stop_compile'].config(state='disabled')
-                        self._compiling = False
-                        return
-                    except Exception as e:
-                        self.append_log(f"Error converting PNG to ICO: {e}\n")
-                        self.status_label.config(text="PNG to ICO conversion failed", fg="red")
-            jobs = self.jobs.get()
-            if jobs and jobs > 1:
-                cmd.append(f"--jobs={jobs}")
-            # Output filename
-            output_filename = self.output_filename.get().strip()
-            if output_filename:
-                cmd.append(f"--output-filename={output_filename}")
-            # Splash screen option
-            splash_img = self.splash_image_path.get().strip()
-            splash_timeout = self.splash_timeout.get()
-            if splash_img:
-                cmd.append(f"--onefile-windows-splash-screen-image={splash_img}")
-                if splash_timeout:
-                    cmd.append(f"--onefile-windows-splash-screen-timeout={splash_timeout}")
-            # Advanced options
-            exclude_modules = self.exclude_modules.get().strip()
-            if exclude_modules:
-                for mod in exclude_modules.split(","):
-                    mod = mod.strip()
-                    if mod:
-                        cmd.append(f"--nofollow-import-to={mod}")
-            include_modules = self.include_modules.get().strip()
-            if include_modules:
-                for mod in include_modules.split(","):
-                    mod = mod.strip()
-                    if mod:
-                        cmd.append(f"--include-module={mod}")
-            if self.remove_output.get():
-                cmd.append("--remove-output")
-            if self.show_memory.get():
-                cmd.append("--show-memory")
-            if self.show_progress.get():
-                cmd.append("--show-progress")
-            if self.pgo.get():
-                cmd.append("--pgo")
-            if self.no_dependency_cache.get():
-                cmd.append("--no-dependency-cache")
-            compression = self.onefile_compression.get()
-            if compression and compression != "auto":
-                cmd.append(f"--onefile-compression={compression}")
-            python_flags = self.python_flags.get().strip()
-            if python_flags:
-                for flag in python_flags.split(","):
-                    flag = flag.strip()
-                    if flag:
-                        cmd.append(f"--python-flag={flag}")
-            # Custom options
-            custom = self.custom_opts.get().strip()
-            if custom:
-                cmd.extend(custom.split())
-            cmd.append(file)
-            self.append_log(f"Running: {' '.join(cmd)}\n")
-            import subprocess
             self._nuitka_proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             stdout, stderr = self._nuitka_proc.communicate()
             self.append_log(stdout)
             if stderr:
                 self.append_log(stderr)
             if self._nuitka_proc.returncode == 0:
-                self.status_label.config(text="Compilation succeeded!", fg="green")
+                self._show_success("Compilation succeeded!")
             else:
-                self.status_label.config(text="Compilation failed. See output.", fg="red")
+                self._show_error("Compilation failed. See output log.")
         except Exception as e:
-            self.status_label.config(text="Error running Nuitka.", fg="red")
-            self.append_log(str(e))
+            self._show_error(f"Error running Nuitka: {e}")
         finally:
             self.buttons['compile'].config(state='normal')
             self.buttons['stop_compile'].config(state='disabled')

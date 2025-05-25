@@ -4,12 +4,14 @@ Version management for Nuitka GUI Compiler.
 Centralized version tracking for the Nuitka GUI Compiler project.
 Follows Semantic Versioning 2.0.0 (https://semver.org/).
 
+v1.4.0: Added more advanced Nuitka options (MinGW64, UAC, metadata fields), grouped advanced options, improved error handling and validation, and UI/UX improvements.
+
 License: GPL v3.0 (see LICENSE)
 """
 
 # Version information follows Semantic Versioning 2.0.0 (https://semver.org/)
 VERSION_MAJOR = 1
-VERSION_MINOR = 3
+VERSION_MINOR = 4
 VERSION_PATCH = 0
 
 # Additional version qualifiers
